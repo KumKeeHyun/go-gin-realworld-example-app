@@ -31,10 +31,14 @@ func newSqliteFixture(t *testing.T) *sqliteFixture {
 	if err != nil {
 		t.Fatal(err)
 	}
-	return &sqliteFixture{
+	f := &sqliteFixture{
 		t:  t,
 		db: db,
 	}
+	t.Cleanup(func() {
+		f.close()
+	})
+	return f
 }
 
 func (f *sqliteFixture) expectGiven(fn func(tx *gorm.DB) error) {
@@ -97,7 +101,6 @@ func checkUser(t *testing.T, expected, actual domain.User) {
 
 func Test_sqliteRepository_Save(t *testing.T) {
 	f := newSqliteFixture(t)
-	defer f.close()
 
 	tests := []struct {
 		name    string
@@ -211,7 +214,6 @@ func Test_sqliteRepository_Save(t *testing.T) {
 
 func Test_sqliteRepository_FindByID(t *testing.T) {
 	f := newSqliteFixture(t)
-	defer f.close()
 
 	tests := []struct {
 		name    string
@@ -251,7 +253,6 @@ func Test_sqliteRepository_FindByID(t *testing.T) {
 
 func Test_sqliteRepository_FindByEmail(t *testing.T) {
 	f := newSqliteFixture(t)
-	defer f.close()
 
 	tests := []struct {
 		name    string
@@ -290,7 +291,6 @@ func Test_sqliteRepository_FindByEmail(t *testing.T) {
 
 func Test_sqliteRepository_FindByUsername(t *testing.T) {
 	f := newSqliteFixture(t)
-	defer f.close()
 
 	tests := []struct {
 		name    string
@@ -329,7 +329,6 @@ func Test_sqliteRepository_FindByUsername(t *testing.T) {
 
 func Test_sqliteRepository_FindProfile(t *testing.T) {
 	f := newSqliteFixture(t)
-	defer f.close()
 
 	tests := []struct {
 		name    string

@@ -10,7 +10,6 @@ import (
 
 func Test_commentRepository_FindFromArticle(t *testing.T) {
 	f := newSqliteFixture(t)
-	defer f.close()
 
 	tests := []struct {
 		name    string
@@ -79,7 +78,6 @@ func Test_commentRepository_FindFromArticle(t *testing.T) {
 
 func Test_commentRepository_Delete(t *testing.T) {
 	f := newSqliteFixture(t)
-	defer f.close()
 
 	tests := []struct {
 		name    string

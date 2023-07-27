@@ -10,7 +10,6 @@ import (
 
 func Test_articleRepository_FindBySearchConditions(t *testing.T) {
 	f := newSqliteFixture(t)
-	defer f.close()
 
 	tests := []struct {
 		name    string
@@ -201,7 +200,6 @@ func Test_articleRepository_FindBySearchConditions(t *testing.T) {
 
 func Test_articleRepository_FindFavorites(t *testing.T) {
 	f := newSqliteFixture(t)
-	defer f.close()
 
 	tests := []struct {
 		name    string
