@@ -43,7 +43,7 @@ func (s commentService) Create(authorID uint, slug string, body string) (domain.
 	}
 	article, err := s.articleRepo.FindBySlug(slug)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return domain.CommentView{}, gorm.ErrRecordNotFound
+		return domain.CommentView{}, ports.ErrResourceNotFound
 	} else if err != nil {
 		s.logger.Errorw("failed to find article", "err", err)
 		return domain.CommentView{}, ports.ErrInternal
@@ -69,7 +69,7 @@ func (s commentService) Create(authorID uint, slug string, body string) (domain.
 func (s commentService) GetFromArticle(readerID uint, slug string) ([]domain.CommentView, error) {
 	_, err := s.articleRepo.FindBySlug(slug)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, gorm.ErrRecordNotFound
+		return nil, ports.ErrResourceNotFound
 	} else if err != nil {
 		s.logger.Errorw("failed to find article", "err", err)
 		return nil, ports.ErrInternal

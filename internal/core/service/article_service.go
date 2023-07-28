@@ -174,7 +174,7 @@ func (s articleService) Update(authorID uint, slug string, fields ports.ArticleU
 	}
 
 	_, favoriteErr := s.articleRepo.FindFavorite(authorID, article.ID)
-	if !errors.Is(favoriteErr, gorm.ErrRecordNotFound) {
+	if err != nil && !errors.Is(favoriteErr, gorm.ErrRecordNotFound) {
 		s.logger.Errorw("failed to find favorite", "err", err)
 		return domain.ArticleView{}, ports.ErrInternal
 	}
