@@ -34,7 +34,7 @@ func (c *ArticleController) CreateArticle(ctx *gin.Context) {
 	}
 
 	request := CreateArticleRequest{}
-	if err := ctx.ShouldBind(&request); err != nil {
+	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.Error(err)
 		return
 	}
@@ -141,7 +141,7 @@ func (c *ArticleController) GetArticle(ctx *gin.Context) {
 		ctx.Error(err)
 		return
 	}
-	ctx.JSON(http.StatusCreated, ArticleViewToResponse(article))
+	ctx.JSON(http.StatusOK, ArticleViewToResponse(article))
 }
 
 type UpdateArticleRequest struct {

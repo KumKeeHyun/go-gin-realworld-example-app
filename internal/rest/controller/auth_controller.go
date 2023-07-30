@@ -24,7 +24,7 @@ type AuthenticateUserRequest struct {
 
 func (c *AuthController) AuthenticateUser(ctx *gin.Context) {
 	request := AuthenticateUserRequest{}
-	if err := ctx.ShouldBind(&request); err != nil {
+	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.Error(err)
 		return
 	}
@@ -46,7 +46,7 @@ type RegisterUserRequest struct {
 
 func (c *AuthController) RegisterUser(ctx *gin.Context) {
 	request := RegisterUserRequest{}
-	if err := ctx.ShouldBind(&request); err != nil {
+	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.Error(err)
 		return
 	}
@@ -98,7 +98,7 @@ func (c *AuthController) UpdateUser(ctx *gin.Context) {
 	}
 
 	request := UpdateUserRequest{}
-	if err := ctx.ShouldBind(&request); err != nil {
+	if err := ctx.ShouldBindJSON(&request); err != nil {
 		ctx.Error(err)
 		return
 	}

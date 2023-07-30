@@ -17,6 +17,15 @@ func (t JSONTime) MarshalJSON() ([]byte, error) {
 	return []byte(time.Time(t).Format(JSON_ISO8601)), nil
 }
 
+func (t *JSONTime) UnmarshalJSON(data []byte) error {
+	p, err := time.Parse(JSON_ISO8601, string(data))
+	if err != nil {
+		return err
+	}
+	*t = JSONTime(p)
+	return nil
+}
+
 type UserResponse struct {
 	User struct {
 		Email    string  `json:"email"`
