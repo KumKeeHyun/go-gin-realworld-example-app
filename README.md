@@ -1,6 +1,6 @@
 # go-gin-realworld-example-app
 
-Example real world backend API built with Golang + Gin + Gorm + Swagger
+Example real world backend API built with Golang + Gin + Gorm
 
 ## 목표
 
@@ -8,7 +8,7 @@ Example real world backend API built with Golang + Gin + Gorm + Swagger
 - Hexagonal Architectural 공부
 - wire(DI), gomock(unit test) 사용해보기
 - Observability 적용해보기
-- CircelCI, ArgoCD 적용해보기
+- Github Action, ArgoCD 으로 CI/CD 적용해보기
 
 ### ReferencePermalink
 
