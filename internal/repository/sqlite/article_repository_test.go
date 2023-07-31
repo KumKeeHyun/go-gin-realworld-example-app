@@ -1,3 +1,6 @@
+//go:build sqlite
+// +build sqlite
+
 package sqlite
 
 import (
