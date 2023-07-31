@@ -27,12 +27,15 @@ type config struct {
 
 func readConfig() (*config, error) {
 	// default
-	viper.SetDefault("logger.profile", "dev")
 	viper.SetDefault("datasource.dbType", "sqlite")
 	viper.SetDefault("datasource.url", "./local.db")
+	viper.SetDefault("datasource.postgresConfig", "")
 	viper.SetDefault("server.host", "127.0.0.1")
 	viper.SetDefault("server.port", "8080")
+	viper.SetDefault("server.certFile", "")
+	viper.SetDefault("server.keyFile", "")
 	viper.SetDefault("jwt.secretKey", "realworld-secret-key")
+	viper.SetDefault("logger.profile", "dev")
 
 	// yaml
 	viper.SetConfigType("yaml")
