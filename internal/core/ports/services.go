@@ -1,5 +1,7 @@
 package ports
 
+//go:generate mockgen -destination=./mock_ports/mock_services.go -package=mock_ports github.com/KumKeeHyun/gin-realworld/internal/core/ports AuthService,ProfileService,ArticleService,CommentService
+
 import (
 	"errors"
 	"github.com/KumKeeHyun/gin-realworld/internal/core/domain"
