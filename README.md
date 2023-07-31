@@ -6,11 +6,11 @@ Example real world backend API built with Golang + Gin + Gorm
 
 - gin, gorm 리마인드
 - Hexagonal Architectural 공부
-- wire(DI), gomock(unit test) 사용해보기
+- wire(DI), gomock 사용해보기
 - Observability 적용해보기
 - Github Action, ArgoCD 으로 CI/CD 적용해보기
 
-### ReferencePermalink
+### Reference
 
 - hexagonal architectural
   - https://medium.com/@matiasvarela/hexagonal-architecture-in-go-cfd4e436faa3
