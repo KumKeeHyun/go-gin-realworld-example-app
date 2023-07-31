@@ -70,12 +70,12 @@ func (s articleService) Find(readerID uint, slug string) (domain.ArticleView, er
 	}
 
 	_, favoriteErr := s.articleRepo.FindFavorite(readerID, article.ID)
-	if !errors.Is(favoriteErr, gorm.ErrRecordNotFound) {
+	if err != nil && !errors.Is(favoriteErr, gorm.ErrRecordNotFound) {
 		s.logger.Errorw("failed to find favorite", "err", err)
 		return domain.ArticleView{}, ports.ErrInternal
 	}
 	_, followErr := s.userRepo.FindFollow(readerID, article.Author.ID)
-	if !errors.Is(followErr, gorm.ErrRecordNotFound) {
+	if err != nil && !errors.Is(followErr, gorm.ErrRecordNotFound) {
 		s.logger.Errorw("failed to find follow", "err", err)
 		return domain.ArticleView{}, ports.ErrInternal
 	}
@@ -233,7 +233,7 @@ func (s articleService) Favorite(userID uint, slug string) (domain.ArticleView, 
 	}
 
 	_, followErr := s.userRepo.FindFollow(userID, article.Author.ID)
-	if !errors.Is(followErr, gorm.ErrRecordNotFound) {
+	if followErr != nil && !errors.Is(followErr, gorm.ErrRecordNotFound) {
 		s.logger.Errorw("failed to find follow", "err", err)
 		return domain.ArticleView{}, ports.ErrInternal
 	}
@@ -256,7 +256,7 @@ func (s articleService) Unfavorite(userID uint, slug string) (domain.ArticleView
 	}
 
 	_, followErr := s.userRepo.FindFollow(userID, article.Author.ID)
-	if !errors.Is(followErr, gorm.ErrRecordNotFound) {
+	if followErr != nil && !errors.Is(followErr, gorm.ErrRecordNotFound) {
 		s.logger.Errorw("failed to find follow", "err", err)
 		return domain.ArticleView{}, ports.ErrInternal
 	}

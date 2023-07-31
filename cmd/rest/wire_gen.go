@@ -8,6 +8,7 @@ package main
 
 import (
 	"github.com/KumKeeHyun/gin-realworld/internal/core/service"
+	"github.com/KumKeeHyun/gin-realworld/internal/repository/postgres"
 	"github.com/KumKeeHyun/gin-realworld/internal/repository/sqlite"
 	"github.com/KumKeeHyun/gin-realworld/internal/rest"
 	"github.com/KumKeeHyun/gin-realworld/internal/rest/controller"
@@ -45,9 +46,37 @@ func InitRouterUsingSqlite(cfg *config, logger *zap.Logger) (*gin.Engine, error)
 	return engine, nil
 }
 
+func InitRouterUsingPostgres(cfg *config, logger *zap.Logger) (*gin.Engine, error) {
+	jwtUtil := InitJwtUtil(cfg)
+	checkJwtMiddleware := middleware.NewCheckJwtMiddleware(jwtUtil, logger)
+	ensureAuthMiddleware := middleware.NewEnsureAuthMiddleware(logger)
+	ensureNotAuthMiddleware := middleware.NewEnsureNotAuthMiddleware(logger)
+	db, err := InitDatasource(cfg, logger)
+	if err != nil {
+		return nil, err
+	}
+	transactionMiddleware := middleware.NewTransactionMiddleware(db, logger)
+	errorsMiddleware := middleware.NewErrorsMiddleware(logger)
+	userRepository := postgres.NewUserRepository(db)
+	articleRepository := postgres.NewArticleRepository(db)
+	authService := service.NewAuthService(userRepository, articleRepository, jwtUtil, logger)
+	authController := controller.NewAuthController(authService)
+	profileService := service.NewProfileService(userRepository, logger)
+	profileController := controller.NewProfileController(profileService)
+	articleService := service.NewArticleService(articleRepository, userRepository, logger)
+	articleController := controller.NewArticleController(articleService)
+	commentRepository := postgres.NewCommentRepository(db)
+	commentService := service.NewCommentService(commentRepository, articleRepository, userRepository, logger)
+	commentController := controller.NewCommentController(commentService)
+	engine := rest.NewRouter(logger, checkJwtMiddleware, ensureAuthMiddleware, ensureNotAuthMiddleware, transactionMiddleware, errorsMiddleware, authController, profileController, articleController, commentController)
+	return engine, nil
+}
+
 // wire.go:
 
 var SqliteRepositorySet = wire.NewSet(sqlite.NewUserRepository, sqlite.NewArticleRepository, sqlite.NewCommentRepository)
+
+var PostgresRepositorySet = wire.NewSet(postgres.NewUserRepository, postgres.NewArticleRepository, postgres.NewCommentRepository)
 
 var ServiceSet = wire.NewSet(service.NewAuthService, service.NewProfileService, service.NewArticleService, service.NewCommentService)
 

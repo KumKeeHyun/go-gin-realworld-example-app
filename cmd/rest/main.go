@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/KumKeeHyun/gin-realworld/internal/core/domain"
 	"github.com/KumKeeHyun/gin-realworld/pkg/jwtutil"
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"go.uber.org/zap"
 	"gorm.io/driver/postgres"
@@ -25,7 +26,7 @@ func main() {
 	defer logger.Sync()
 	logger.Sugar().Infow("read config", "config", config)
 
-	r, err := InitRouterUsingSqlite(config, logger)
+	r, err := InitRouter(config, logger)
 	if err != nil {
 		panic(err)
 	}
@@ -35,6 +36,17 @@ func main() {
 		log.Fatal(r.Run(addr))
 	} else {
 		log.Fatal(r.RunTLS(addr, config.Server.CertFile, config.Server.KeyFile))
+	}
+}
+
+func InitRouter(config *config, logger *zap.Logger) (*gin.Engine, error) {
+	switch config.Datasource.DBType {
+	case "sqlite":
+		return InitRouterUsingSqlite(config, logger)
+	case "postgres":
+		return InitRouterUsingPostgres(config, logger)
+	default:
+		return nil, fmt.Errorf("invalid dbType: %s", config.Datasource.DBType)
 	}
 }
 

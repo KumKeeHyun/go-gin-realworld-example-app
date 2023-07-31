@@ -5,6 +5,7 @@ package main
 
 import (
 	"github.com/KumKeeHyun/gin-realworld/internal/core/service"
+	"github.com/KumKeeHyun/gin-realworld/internal/repository/postgres"
 	"github.com/KumKeeHyun/gin-realworld/internal/repository/sqlite"
 	"github.com/KumKeeHyun/gin-realworld/internal/rest"
 	"github.com/KumKeeHyun/gin-realworld/internal/rest/controller"
@@ -18,6 +19,12 @@ var SqliteRepositorySet = wire.NewSet(
 	sqlite.NewUserRepository,
 	sqlite.NewArticleRepository,
 	sqlite.NewCommentRepository,
+)
+
+var PostgresRepositorySet = wire.NewSet(
+	postgres.NewUserRepository,
+	postgres.NewArticleRepository,
+	postgres.NewCommentRepository,
 )
 
 var ServiceSet = wire.NewSet(
@@ -52,6 +59,20 @@ func InitRouterUsingSqlite(cfg *config, logger *zap.Logger) (*gin.Engine, error)
 		ControllerSet,
 		ServiceSet,
 		SqliteRepositorySet,
+	)
+	return nil, nil
+}
+
+func InitRouterUsingPostgres(cfg *config, logger *zap.Logger) (*gin.Engine, error) {
+	wire.Build(
+		InitDatasource,
+		InitJwtUtil,
+		rest.NewRouter,
+
+		MiddlewareSet,
+		ControllerSet,
+		ServiceSet,
+		PostgresRepositorySet,
 	)
 	return nil, nil
 }
