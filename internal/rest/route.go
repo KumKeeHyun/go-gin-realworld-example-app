@@ -5,6 +5,7 @@ import (
 	"github.com/KumKeeHyun/gin-realworld/internal/rest/middleware"
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
 	"time"
 )
@@ -16,6 +17,7 @@ func NewRouter(
 	ensureNotAuthMiddleware middleware.EnsureNotAuthMiddleware,
 	transactionMiddleware middleware.TransactionMiddleware,
 	errorsMiddleware middleware.ErrorsMiddleware,
+	metricMiddleware middleware.MetricMiddleware,
 	authController *controller.AuthController,
 	profileController *controller.ProfileController,
 	articleController *controller.ArticleController,
@@ -26,6 +28,7 @@ func NewRouter(
 	ensureNotAuth := ensureNotAuthMiddleware.GinHandlerFunc()
 	transaction := transactionMiddleware.GinHandlerFunc()
 	errorHandler := errorsMiddleware.GinHandlerFunc()
+	metrics := metricMiddleware.GinHandlerFunc()
 
 	r := gin.New()
 	r.Use(ginzap.GinzapWithConfig(logger, &ginzap.Config{
@@ -34,6 +37,9 @@ func NewRouter(
 		TraceID:    false,
 	}))
 	r.Use(ginzap.RecoveryWithZap(logger, false))
+	r.Use(metrics)
+
+	r.GET("/metrics", gin.WrapH(promhttp.Handler()))
 
 	api := r.Group("api", errorHandler, checkJwt)
 

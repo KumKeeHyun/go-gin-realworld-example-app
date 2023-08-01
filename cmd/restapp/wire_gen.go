@@ -31,6 +31,7 @@ func InitRouterUsingSqlite(cfg *config, logger *zap.Logger) (*gin.Engine, error)
 	}
 	transactionMiddleware := middleware.NewTransactionMiddleware(db, logger)
 	errorsMiddleware := middleware.NewErrorsMiddleware(logger)
+	metricMiddleware := middleware.NewMetricMiddleware()
 	userRepository := sqlite.NewUserRepository(db)
 	articleRepository := sqlite.NewArticleRepository(db)
 	authService := service.NewAuthService(userRepository, articleRepository, jwtUtil, logger)
@@ -42,7 +43,7 @@ func InitRouterUsingSqlite(cfg *config, logger *zap.Logger) (*gin.Engine, error)
 	commentRepository := sqlite.NewCommentRepository(db)
 	commentService := service.NewCommentService(commentRepository, articleRepository, userRepository, logger)
 	commentController := controller.NewCommentController(commentService)
-	engine := rest.NewRouter(logger, checkJwtMiddleware, ensureAuthMiddleware, ensureNotAuthMiddleware, transactionMiddleware, errorsMiddleware, authController, profileController, articleController, commentController)
+	engine := rest.NewRouter(logger, checkJwtMiddleware, ensureAuthMiddleware, ensureNotAuthMiddleware, transactionMiddleware, errorsMiddleware, metricMiddleware, authController, profileController, articleController, commentController)
 	return engine, nil
 }
 
@@ -57,6 +58,7 @@ func InitRouterUsingPostgres(cfg *config, logger *zap.Logger) (*gin.Engine, erro
 	}
 	transactionMiddleware := middleware.NewTransactionMiddleware(db, logger)
 	errorsMiddleware := middleware.NewErrorsMiddleware(logger)
+	metricMiddleware := middleware.NewMetricMiddleware()
 	userRepository := postgres.NewUserRepository(db)
 	articleRepository := postgres.NewArticleRepository(db)
 	authService := service.NewAuthService(userRepository, articleRepository, jwtUtil, logger)
@@ -68,7 +70,7 @@ func InitRouterUsingPostgres(cfg *config, logger *zap.Logger) (*gin.Engine, erro
 	commentRepository := postgres.NewCommentRepository(db)
 	commentService := service.NewCommentService(commentRepository, articleRepository, userRepository, logger)
 	commentController := controller.NewCommentController(commentService)
-	engine := rest.NewRouter(logger, checkJwtMiddleware, ensureAuthMiddleware, ensureNotAuthMiddleware, transactionMiddleware, errorsMiddleware, authController, profileController, articleController, commentController)
+	engine := rest.NewRouter(logger, checkJwtMiddleware, ensureAuthMiddleware, ensureNotAuthMiddleware, transactionMiddleware, errorsMiddleware, metricMiddleware, authController, profileController, articleController, commentController)
 	return engine, nil
 }
 
@@ -82,4 +84,4 @@ var ServiceSet = wire.NewSet(service.NewAuthService, service.NewProfileService, 
 
 var ControllerSet = wire.NewSet(controller.NewAuthController, controller.NewProfileController, controller.NewArticleController, controller.NewCommentController)
 
-var MiddlewareSet = wire.NewSet(middleware.NewCheckJwtMiddleware, middleware.NewEnsureAuthMiddleware, middleware.NewEnsureNotAuthMiddleware, middleware.NewTransactionMiddleware, middleware.NewErrorsMiddleware)
+var MiddlewareSet = wire.NewSet(middleware.NewCheckJwtMiddleware, middleware.NewEnsureAuthMiddleware, middleware.NewEnsureNotAuthMiddleware, middleware.NewTransactionMiddleware, middleware.NewErrorsMiddleware, middleware.NewMetricMiddleware)

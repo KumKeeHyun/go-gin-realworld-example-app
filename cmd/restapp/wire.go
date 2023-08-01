@@ -47,6 +47,7 @@ var MiddlewareSet = wire.NewSet(
 	middleware.NewEnsureNotAuthMiddleware,
 	middleware.NewTransactionMiddleware,
 	middleware.NewErrorsMiddleware,
+	middleware.NewMetricMiddleware,
 )
 
 func InitRouterUsingSqlite(cfg *config, logger *zap.Logger) (*gin.Engine, error) {
