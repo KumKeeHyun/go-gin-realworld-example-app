@@ -5,10 +5,10 @@ import (
 	"github.com/KumKeeHyun/gin-realworld/internal/core/domain"
 	"github.com/KumKeeHyun/gin-realworld/pkg/jwtutil"
 	"github.com/gin-gonic/gin"
+	"github.com/glebarez/sqlite"
 	"github.com/golang-jwt/jwt/v5"
 	"go.uber.org/zap"
 	"gorm.io/driver/postgres"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"log"
 	"moul.io/zapgorm2"
@@ -44,6 +44,7 @@ func InitRouter(config *config, logger *zap.Logger) (*gin.Engine, error) {
 	case "sqlite":
 		return InitRouterUsingSqlite(config, logger)
 	case "postgres":
+		gin.SetMode(gin.ReleaseMode)
 		return InitRouterUsingPostgres(config, logger)
 	default:
 		return nil, fmt.Errorf("invalid dbType: %s", config.Datasource.DBType)
