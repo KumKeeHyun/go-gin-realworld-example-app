@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-realworld-restapp
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}-realworld-restapp
+spec:
+  replicas: {{ .Values.restapp.replicas }}
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-realworld-restapp
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-realworld-restapp
+    spec:
+      containers:
+        - name: realworld-restapp
+          image: {{ .Values.restapp.image.repository }}:{{ .Values.restapp.image.tag }}
+          imagePullPolicy: {{ .Values.restapp.image.pullPolicy }}
+          ports:
+            {{- toYaml .Values.restapp.ports | nindent 12 }}
+          resources:
+            {{- toYaml .Values.restapp.resources | nindent 12 }}
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}-secret
+          env:
+            - name: SERVER_HOST
+              value: 0.0.0.0
+            - name: LOGGER_PROFILE
+              value: prod
+            - name: DATASOURCE_DBTYPE
+              value: postgres

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-realworld-restapp
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: {{ .Release.Name }}-realworld-restapp
+  ports:
+    - name: http-server
+      port: {{ .Values.restapp.service.port }}
+      targetPort: {{ .Values.restapp.service.targetPort }}
+  type: {{ .Values.restapp.service.type }}
+

@@ -1,0 +1,35 @@
+adminConfig:
+  JWTSecret: "realworld"
+  POSTGRES_DB_SERVER: "postgresql"
+  POSTGRES_DB_PORT: "5432"
+
+postgresql:
+  enabled: true
+  auth:
+    postgresPassword: "superhardpassword"
+    username: "postgres-user"
+    password: "hardpassword"
+    database: "realworld"
+
+restapp:
+  image:
+    repository: kbzjung359/realworld
+    tag: sha-0802875
+    pullPolicy: "Always"
+  ports:
+    - name: http
+      containerPort: 8080
+  service:
+    type: LoadBalancer
+    port: 10080
+    targetPort: 8080
+  replicas: 1
+  resources:
+    requests:
+      memory: "150Mi"
+      cpu: "120m"
+      ephemeral-storage: "100Mi"
+    limits:
+      memory: "150Mi"
+      cpu: "120m"
+      ephemeral-storage: "100Mi"

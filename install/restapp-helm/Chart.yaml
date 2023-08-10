@@ -1,0 +1,10 @@
+apiVersion: v2
+name: restapp-charts
+version: 0.0.1
+sources:
+  - https://github.com/KumKeeHyun/go-gin-realworld-example-app
+dependencies:
+  - name: postgresql
+    repository: https://charts.bitnami.com/bitnami
+    version: 12.5.7
+    condition: postgresql.enabled
