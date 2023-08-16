@@ -3,6 +3,7 @@ package rest
 import (
 	"github.com/KumKeeHyun/gin-realworld/internal/rest/controller"
 	"github.com/KumKeeHyun/gin-realworld/internal/rest/middleware"
+	"github.com/gin-contrib/cors"
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -31,6 +32,12 @@ func NewRouter(
 	metrics := metricMiddleware.GinHandlerFunc()
 
 	r := gin.New()
+
+	corsCfg := cors.DefaultConfig()
+	corsCfg.AllowAllOrigins = true
+	corsCfg.AllowCredentials = true
+	r.Use(cors.New(corsCfg))
+
 	r.Use(ginzap.GinzapWithConfig(logger, &ginzap.Config{
 		TimeFormat: time.RFC3339,
 		UTC:        true,

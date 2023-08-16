@@ -76,98 +76,114 @@ func ProfileToResp(profile domain.Profile) ProfileResponse {
 	return resp
 }
 
+type Article struct {
+	Slug           string   `json:"slug"`
+	Title          string   `json:"title"`
+	Description    string   `json:"description"`
+	Body           string   `json:"body"`
+	TagList        []string `json:"tagList"`
+	CreatedAt      JSONTime `json:"createdAt"`
+	UpdatedAt      JSONTime `json:"updatedAt"`
+	Favorited      bool     `json:"favorited"`
+	FavoritesCount int      `json:"favoritesCount"`
+	Author         struct {
+		Username  string  `json:"username"`
+		Bio       string  `json:"bio"`
+		Image     *string `json:"image"`
+		Following bool    `json:"following"`
+	} `json:"author"`
+}
+
+func ArticleViewToDto(article domain.ArticleView) Article {
+	var a Article
+	a.Slug = article.Slug
+	a.Title = article.Title
+	a.Description = article.Description
+	a.Body = article.Body
+	a.TagList = article.Tags
+	a.CreatedAt = JSONTime(article.CreatedAt)
+	a.UpdatedAt = JSONTime(article.UpdatedAt)
+	a.Favorited = article.Favorited
+	a.FavoritesCount = article.FavoritesCount
+	a.Author.Username = article.AuthorUsername
+	a.Author.Bio = article.AuthorBio
+	if article.AuthorImage.Valid {
+		a.Author.Image = &article.AuthorImage.String
+	}
+	a.Author.Following = article.AuthorFollowing
+	return a
+}
+
 type ArticleResponse struct {
-	Article struct {
-		Slug           string   `json:"slug"`
-		Title          string   `json:"title"`
-		Description    string   `json:"description"`
-		Body           string   `json:"body"`
-		TagList        []string `json:"tagList"`
-		CreatedAt      JSONTime `json:"createdAt"`
-		UpdatedAt      JSONTime `json:"updatedAt"`
-		Favorited      bool     `json:"favorited"`
-		FavoritesCount int      `json:"favoritesCount"`
-		Author         struct {
-			Username  string  `json:"username"`
-			Bio       string  `json:"bio"`
-			Image     *string `json:"image"`
-			Following bool    `json:"following"`
-		} `json:"author"`
-	} `json:"article"`
+	Article Article `json:"article"`
 }
 
 func ArticleViewToResponse(article domain.ArticleView) ArticleResponse {
 	var resp ArticleResponse
-	resp.Article.Slug = article.Slug
-	resp.Article.Title = article.Title
-	resp.Article.Description = article.Description
-	resp.Article.Body = article.Body
-	resp.Article.TagList = article.Tags
-	resp.Article.CreatedAt = JSONTime(article.CreatedAt)
-	resp.Article.UpdatedAt = JSONTime(article.UpdatedAt)
-	resp.Article.Favorited = article.Favorited
-	resp.Article.FavoritesCount = article.FavoritesCount
-	resp.Article.Author.Username = article.AuthorUsername
-	resp.Article.Author.Bio = article.AuthorBio
-	if article.AuthorImage.Valid {
-		resp.Article.Author.Image = &article.AuthorImage.String
-	}
-	resp.Article.Author.Following = article.AuthorFollowing
+	resp.Article = ArticleViewToDto(article)
 	return resp
 }
 
 type MultipleArticlesResponse struct {
-	Articles      []ArticleResponse `json:"articles"`
-	ArticlesCount int               `json:"articlesCount"`
+	Articles      []Article `json:"articles"`
+	ArticlesCount int       `json:"articlesCount"`
 }
 
 func ArticlesToResponse(articles []domain.ArticleView) MultipleArticlesResponse {
 	var resp MultipleArticlesResponse
-	resp.Articles = lo.Map(articles, func(article domain.ArticleView, index int) ArticleResponse {
-		return ArticleViewToResponse(article)
+	resp.Articles = lo.Map(articles, func(article domain.ArticleView, index int) Article {
+		return ArticleViewToDto(article)
 	})
 	resp.ArticlesCount = len(articles)
 	return resp
 }
 
+type Comment struct {
+	Id        uint     `json:"id"`
+	CreatedAt JSONTime `json:"createdAt"`
+	UpdatedAt JSONTime `json:"updatedAt"`
+	Body      string   `json:"body"`
+	Author    struct {
+		Username  string  `json:"username"`
+		Bio       string  `json:"bio"`
+		Image     *string `json:"image"`
+		Following bool    `json:"following"`
+	} `json:"author"`
+}
+
+func CommentViewToDto(comment domain.CommentView) Comment {
+	var c Comment
+	c.Id = comment.ID
+	c.CreatedAt = JSONTime(comment.CreatedAt)
+	c.UpdatedAt = JSONTime(comment.UpdatedAt)
+	c.Body = comment.Body
+	c.Author.Username = comment.AuthorUsername
+	c.Author.Bio = comment.AuthorBio
+	if comment.AuthorImage.Valid {
+		c.Author.Image = &comment.AuthorImage.String
+	}
+	c.Author.Following = comment.AuthorFollowing
+	return c
+}
+
 type CommentResponse struct {
-	Comment struct {
-		Id        uint     `json:"id"`
-		CreatedAt JSONTime `json:"createdAt"`
-		UpdatedAt JSONTime `json:"updatedAt"`
-		Body      string   `json:"body"`
-		Author    struct {
-			Username  string  `json:"username"`
-			Bio       string  `json:"bio"`
-			Image     *string `json:"image"`
-			Following bool    `json:"following"`
-		} `json:"author"`
-	} `json:"comment"`
+	Comment Comment `json:"comment"`
 }
 
 func CommentViewToResponse(comment domain.CommentView) CommentResponse {
 	var resp CommentResponse
-	resp.Comment.Id = comment.ID
-	resp.Comment.CreatedAt = JSONTime(comment.CreatedAt)
-	resp.Comment.UpdatedAt = JSONTime(comment.UpdatedAt)
-	resp.Comment.Body = comment.Body
-	resp.Comment.Author.Username = comment.AuthorUsername
-	resp.Comment.Author.Bio = comment.AuthorBio
-	if comment.AuthorImage.Valid {
-		resp.Comment.Author.Image = &comment.AuthorImage.String
-	}
-	resp.Comment.Author.Following = comment.AuthorFollowing
+	resp.Comment = CommentViewToDto(comment)
 	return resp
 }
 
 type MultipleCommentsResponse struct {
-	Comments []CommentResponse `json:"comments"`
+	Comments []Comment `json:"comments"`
 }
 
 func CommentsToResponse(comments []domain.CommentView) MultipleCommentsResponse {
 	var resp MultipleCommentsResponse
-	resp.Comments = lo.Map(comments, func(comment domain.CommentView, index int) CommentResponse {
-		return CommentViewToResponse(comment)
+	resp.Comments = lo.Map(comments, func(comment domain.CommentView, index int) Comment {
+		return CommentViewToDto(comment)
 	})
 	return resp
 }
