@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-realworld-frontend
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: {{ .Release.Name }}-realworld-frontend
+  ports:
+    - name: http-server
+      port: {{ .Values.frontend.service.port }}
+      targetPort: 8080
+  type: {{ .Values.frontend.service.type }}

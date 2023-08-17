@@ -1,4 +1,5 @@
 adminConfig:
+  DOMAIN_NAME: localhost
   JWTSecret: "realworld"
   POSTGRES_DB_SERVER: "postgresql"
   POSTGRES_DB_PORT: "5432"
@@ -14,14 +15,14 @@ postgresql:
 restapp:
   image:
     repository: kbzjung359/realworld
-    tag: sha-0802875
+    tag: sha-8fdef92
     pullPolicy: "Always"
   ports:
     - name: http
       containerPort: 8080
   service:
-    type: LoadBalancer
-    port: 10080
+    type: ClusterIP
+    port: 9080
     targetPort: 8080
   replicas: 1
   resources:
@@ -32,4 +33,19 @@ restapp:
     limits:
       memory: "150Mi"
       cpu: "120m"
+      ephemeral-storage: "100Mi"
+
+frontend:
+  service:
+    type: ClusterIP
+    port: 9100
+  replicas: 1
+  resources:
+    requests:
+      memory: "150Mi"
+      cpu: "125m"
+      ephemeral-storage: "100Mi"
+    limits:
+      memory: "150Mi"
+      cpu: "125m"
       ephemeral-storage: "100Mi"
