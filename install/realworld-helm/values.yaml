@@ -24,7 +24,7 @@ restapp:
     type: ClusterIP
     port: 9080
     targetPort: 8080
-  replicas: 1
+  replicas: 4
   resources:
     requests:
       memory: "150Mi"

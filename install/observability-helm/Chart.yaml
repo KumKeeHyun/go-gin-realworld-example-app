@@ -1,0 +1,10 @@
+apiVersion: v2
+name: observability-charts
+version: 0.0.1
+sources:
+  - https://github.com/KumKeeHyun/go-gin-realworld-example-app
+dependencies:
+  - name: kube-prometheus-stack
+    repository: https://prometheus-community.github.io/helm-charts
+    version: 48.3.1
+    condition: kube-prometheus-stack.enabled

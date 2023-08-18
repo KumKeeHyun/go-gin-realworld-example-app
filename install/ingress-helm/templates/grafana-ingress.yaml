@@ -1,0 +1,14 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: grafana
+  namespace: observability
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`grafana.{{ .Values.adminConfig.DOMAIN_NAME }}`)
+      kind: Rule
+      services:
+        - name: observability-grafana
+          port: 80

@@ -1,0 +1,22 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: argocd
+  namespace: argocd
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`argocd.{{ .Values.adminConfig.DOMAIN_NAME }}`)
+      kind: Rule
+      priority: 10
+      services:
+        - name: argocd-server
+          port: 443
+    - match: Host(`argocd.{{ .Values.adminConfig.DOMAIN_NAME }}`) && Headers(`Content-Type`, `application/grpc`)
+      kind: Rule
+      priority: 11
+      services:
+        - name: argocd-server
+          port: 443
+          scheme: h2c

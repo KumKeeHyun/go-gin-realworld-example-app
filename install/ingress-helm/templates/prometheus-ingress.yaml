@@ -1,0 +1,14 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: prometheus
+  namespace: observability
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`prometheus.{{ .Values.adminConfig.DOMAIN_NAME }}`)
+      kind: Rule
+      services:
+        - name: prometheus-operated
+          port: 9090

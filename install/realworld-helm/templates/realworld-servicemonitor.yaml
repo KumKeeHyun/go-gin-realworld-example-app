@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Release.Name }}-realworld-restapp
+  labels:
+    app: {{ .Release.Name }}-realworld-restapp
+    release: observability
+namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-realworld-restapp
+  endpoints:
+    - port: "http"
+      path: /metrics
