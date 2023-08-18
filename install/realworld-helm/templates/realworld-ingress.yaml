@@ -1,0 +1,19 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - match: Host(`realworld.{{ .Values.adminConfig.DOMAIN_NAME }}`) && PathPrefix(`/`)
+      kind: Rule
+      services:
+        - name: {{ .Release.Name }}-realworld-frontend
+          port: {{ .Values.frontend.service.port }}
+    - match: Host(`realworld.{{ .Values.adminConfig.DOMAIN_NAME }}`) && PathPrefix(`/api`)
+      kind: Rule
+      services:
+        - name: {{ .Release.Name }}-realworld-restapp
+          port: {{ .Values.restapp.service.port }}

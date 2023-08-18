@@ -3,11 +3,13 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}-realworld-restapp
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}-realworld-restapp
 spec:
   selector:
     app: {{ .Release.Name }}-realworld-restapp
   ports:
-    - name: http-server
+    - name: http
       port: {{ .Values.restapp.service.port }}
       targetPort: {{ .Values.restapp.service.targetPort }}
   type: {{ .Values.restapp.service.type }}

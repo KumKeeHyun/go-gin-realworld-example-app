@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-realworld-frontend
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}-realworld-frontend
+spec:
+  replicas: {{ .Values.frontend.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-realworld-frontend
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-realworld-frontend
+    spec:
+      containers:
+        - name: realworld-frontend
+          image: kbzjung359/realworld-frontend:realworld-localhost
+          imagePullPolicy: Always
+          resources:
+            {{- toYaml .Values.frontend.resources | nindent 12 }}

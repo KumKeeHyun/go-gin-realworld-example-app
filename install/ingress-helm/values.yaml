@@ -1,0 +1,4 @@
+traefik:
+  enabled: true
+adminConfig:
+  DOMAIN_NAME: localhost

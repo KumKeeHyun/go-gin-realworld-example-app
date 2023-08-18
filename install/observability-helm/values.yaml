@@ -1,0 +1,43 @@
+kube-prometheus-stack:
+  enabled: true
+  defaultRules:
+    create: false
+  alertmanager:
+    enabled: true
+  grafana:
+    enabled: true
+  kubeApiServer:
+    enabled: false
+  kubelet:
+    enabled: false
+  kubeControllerManager:
+    enabled: false
+  coreDns:
+    enabled: false
+  kubeDns:
+    enabled: false
+  kubeEtcd:
+    enabled: false
+  kubeScheduler:
+    enabled: false
+  kubeProxy:
+    enabled: false
+  kubeStateMetrics:
+    enabled: false
+  nodeExporter:
+    enabled: false
+  prometheusOperator:
+    enabled: true
+    resources:
+      limits:
+        cpu: 2
+        memory: 2Gi
+      requests:
+        cpu: 1
+        memory: 1Gi
+    serviceMonitor:
+      selfMonitor: false
+  prometheus:
+    enabled: true
+    prometheusSpec:
+      retention: 1d

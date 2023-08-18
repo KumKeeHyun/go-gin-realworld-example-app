@@ -1,0 +1,10 @@
+apiVersion: v2
+name: traefik-ingress-charts
+version: 0.0.1
+sources:
+  - https://github.com/KumKeeHyun/go-gin-realworld-example-app
+dependencies:
+  - name: traefik
+    repository: https://helm.traefik.io/traefik
+    version: 24.0.0
+    condition: traefik.enabled
