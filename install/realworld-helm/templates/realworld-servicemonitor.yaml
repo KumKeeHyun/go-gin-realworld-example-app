@@ -2,6 +2,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ .Release.Name }}-realworld-restapp
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Release.Name }}-realworld-restapp
     release: observability

@@ -28,16 +28,28 @@ kube-prometheus-stack:
     enabled: false
   prometheusOperator:
     enabled: true
-    resources:
-      limits:
-        cpu: 2
-        memory: 2Gi
-      requests:
-        cpu: 1
-        memory: 1Gi
     serviceMonitor:
       selfMonitor: false
   prometheus:
     enabled: true
     prometheusSpec:
       retention: 1d
+      serviceMonitorSelectorNilUsesHelmValues: false
+      podMonitorSelectorNilUsesHelmValues: false
+
+elasticsearch:
+  enabled: true
+  replicas: 1
+  minimumMasterNodes: 1
+  volumeClaimTemplate:
+    resources:
+      requests:
+        storage: 1Gi
+
+kibana:
+  enabled: true
+
+fluentd:
+  enabled: true
+  persistence:
+    size: 1Gi
