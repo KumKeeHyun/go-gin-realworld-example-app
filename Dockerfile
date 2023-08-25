@@ -2,12 +2,13 @@ FROM golang:1.19.3-alpine AS builder
 
 ENV GO111MODULE=on \
     CGO_ENABLED=0 \
-    GOOS=linux \
-    GOARCH=arm64
+    GOOS=linux
 
 WORKDIR /build
-COPY . .
+COPY ./go.* .
 RUN go mod download
+
+COPY . .
 RUN go build -ldflags="-s -w" -trimpath ./cmd/...
 
 WORKDIR /dist
